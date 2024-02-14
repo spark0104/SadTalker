@@ -51,36 +51,38 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                                 input_text = gr.Textbox(label="Generating audio from text", lines=5, placeholder="please enter some text here, we genreate the audio from text using @Coqui.ai TTS.")
                                 tts = gr.Button('Generate audio',elem_id="sadtalker_audio_generate", variant='primary')
                                 tts.click(fn=tts_talker.test, inputs=[input_text], outputs=[driven_audio])
+                
+                with gr.Tabs(elem_id="sadtalker_ref_video"):
+                    with gr.TabItem("Upload Ref Video"):
+                        with gr.Row():
+                            ref_video = gr.Video(label="Ref video", source="upload", type="filepath").style(width=512)
                             
             with gr.Column(variant='panel'): 
                 with gr.Tabs(elem_id="sadtalker_checkbox"):
                     with gr.TabItem('Settings'):
                         gr.Markdown("need help? please visit our [best practice page](https://github.com/OpenTalker/SadTalker/blob/main/docs/best_practice.md) for more detials")
                         with gr.Column(variant='panel'):
+                            ref_info = gr.Radio(["pose", "blink", "pose+blink"])
                             # width = gr.Slider(minimum=64, elem_id="img2img_width", maximum=2048, step=8, label="Manually Crop Width", value=512) # img2img_width
                             # height = gr.Slider(minimum=64, elem_id="img2img_height", maximum=2048, step=8, label="Manually Crop Height", value=512) # img2img_width
-                            pose_style = gr.Slider(minimum=0, maximum=46, step=1, label="Pose style", value=0) # 
-                            size_of_image = gr.Radio([256, 512], value=256, label='face model resolution', info="use 256/512 model?") # 
-                            preprocess_type = gr.Radio(['crop', 'resize','full', 'extcrop', 'extfull'], value='crop', label='preprocess', info="How to handle input image?")
-                            is_still_mode = gr.Checkbox(label="Still Mode (fewer head motion, works with preprocess `full`)")
-                            batch_size = gr.Slider(label="batch size in generation", step=1, maximum=10, value=2)
-                            enhancer = gr.Checkbox(label="GFPGAN as Face enhancer")
+                            # pose_style = gr.Slider(minimum=0, maximum=46, step=1, label="Pose style", value=0) # 
+                            # size_of_image = gr.Radio([256, 512], value=256, label='face model resolution', info="use 256/512 model?") # 
+                            # preprocess_type = gr.Radio(['crop', 'resize','full', 'extcrop', 'extfull'], value='crop', label='preprocess', info="How to handle input image?")
+                            # is_still_mode = gr.Checkbox(label="Still Mode (fewer head motion, works with preprocess `full`)")
+                            # batch_size = gr.Slider(label="batch size in generation", step=1, maximum=10, value=2)
+                            # enhancer = gr.Checkbox(label="GFPGAN as Face enhancer")
                             submit = gr.Button('Generate', elem_id="sadtalker_generate", variant='primary')
                             
                 with gr.Tabs(elem_id="sadtalker_genearted"):
-                        gen_video = gr.Video(label="Generated video", format="mp4").style(width=256)
+                        gen_video = gr.Video(label="Generated video", format="mp4")
 
         if warpfn:
             submit.click(
                         fn=warpfn(sad_talker.test), 
                         inputs=[source_image,
                                 driven_audio,
-                                preprocess_type,
-                                is_still_mode,
-                                enhancer,
-                                batch_size,                            
-                                size_of_image,
-                                pose_style
+                                ref_video,
+                                ref_info,
                                 ], 
                         outputs=[gen_video]
                         )
@@ -89,12 +91,8 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                         fn=sad_talker.test, 
                         inputs=[source_image,
                                 driven_audio,
-                                preprocess_type,
-                                is_still_mode,
-                                enhancer,
-                                batch_size,                            
-                                size_of_image,
-                                pose_style
+                                ref_video,
+                                ref_info,
                                 ], 
                         outputs=[gen_video]
                         )

@@ -33,15 +33,22 @@ class SadTalker():
         self.config_path = config_path
       
 
-    def test(self, source_image, driven_audio, preprocess='crop', 
-        still_mode=False,  use_enhancer=False, batch_size=1, size=256, 
-        pose_style = 0, exp_scale=1.0, 
-        use_ref_video = False,
-        ref_video = None,
-        ref_info = None,
-        use_idle_mode = False,
-        length_of_audio = 0, use_blink=True,
-        result_dir='./results/'):
+    def test(self, source_image, 
+             driven_audio, 
+             ref_video = None,
+             ref_info = None,
+             use_ref_video = True,
+             preprocess='crop', 
+             still_mode=False,  use_enhancer=True, batch_size=1, size=512, 
+             pose_style = 0, exp_scale=1.0, 
+             use_idle_mode = False,
+             length_of_audio = 0, use_blink=True,
+             result_dir='./results/'):
+
+        if not ref_video:
+            ref_info = None
+            still_mode = True
+            use_ref_video = False
 
         self.sadtalker_paths = init_path(self.checkpoint_path, self.config_path, size, False, preprocess)
         print(self.sadtalker_paths)
