@@ -39,7 +39,7 @@ class SadTalker():
              ref_info = None,
              use_ref_video = True,
              preprocess='crop', 
-             still_mode=False,  use_enhancer=True, batch_size=1, size=512, 
+             still_mode=False,  use_enhancer=True, batch_size=1, size=256, 
              pose_style = 0, exp_scale=1.0, 
              use_idle_mode = False,
              length_of_audio = 0, use_blink=True,
