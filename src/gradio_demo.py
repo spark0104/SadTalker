@@ -63,8 +63,6 @@ class SadTalker():
 
         input_dir = os.path.join(save_dir, 'input')
         os.makedirs(input_dir, exist_ok=True)
-
-        print(source_image)
         pic_path = os.path.join(input_dir, os.path.basename(source_image)) 
         shutil.move(source_image, input_dir)
 
@@ -158,5 +156,3 @@ class SadTalker():
         import gc; gc.collect()
         
         return return_path
-
-    

@@ -34,6 +34,10 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
         
         with gr.Row().style(equal_height=False):
             with gr.Column(variant='panel'):
+                with gr.Tabs(elem_id="source_images"):
+                    with gr.TabItem('Upload images'):
+                        with gr.Row():
+                            source_images = gr.File(label="Source images", file_count="multiple", file_types=["image"]).style(width=512)
                 with gr.Tabs(elem_id="sadtalker_source_image"):
                     with gr.TabItem('Upload image'):
                         with gr.Row():
@@ -75,6 +79,8 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                             
                 with gr.Tabs(elem_id="sadtalker_genearted"):
                         gen_video = gr.Video(label="Generated video", format="mp4")
+                # with gr.Tabs(elem_id="Gen Vidoes"):
+                #         gen_videos = gr.File(label="Generated videos", format="mp4", file_c)
 
         if warpfn:
             submit.click(
