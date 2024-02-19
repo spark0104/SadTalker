@@ -39,7 +39,7 @@ class SadTalker():
              ref_info = None,
              use_ref_video = True,
              preprocess='crop', 
-             still_mode=False,  use_enhancer=True, batch_size=1, size=256, 
+             still_mode=False,  use_enhancer=False, batch_size=1, size=256, 
              pose_style = 0, exp_scale=1.0, 
              use_idle_mode = False,
              length_of_audio = 0, use_blink=True,
@@ -66,6 +66,8 @@ class SadTalker():
         pic_path = os.path.join(input_dir, os.path.basename(source_image)) 
         shutil.move(source_image, input_dir)
 
+        print(driven_audio)
+        print(os.path.isfile(driven_audio))
         if driven_audio is not None and os.path.isfile(driven_audio):
             audio_path = os.path.join(input_dir, os.path.basename(driven_audio))  
 
@@ -74,7 +76,7 @@ class SadTalker():
                 mp3_to_wav(driven_audio, audio_path.replace('.mp3', '.wav'), 16000)
                 audio_path = audio_path.replace('.mp3', '.wav')
             else:
-                shutil.move(driven_audio, input_dir)
+                shutil.copy2(driven_audio, input_dir)
 
         elif use_idle_mode:
             audio_path = os.path.join(input_dir, 'idlemode_'+str(length_of_audio)+'.wav') ## generate audio from this new audio_path
@@ -82,6 +84,7 @@ class SadTalker():
             one_sec_segment = AudioSegment.silent(duration=1000*length_of_audio)  #duration in milliseconds
             one_sec_segment.export(audio_path, format="wav")
         else:
+            print(ref_video)
             print(use_ref_video, ref_info)
             assert use_ref_video == True and ref_info == 'all'
 
@@ -156,3 +159,19 @@ class SadTalker():
         import gc; gc.collect()
         
         return return_path
+    
+    def test_multiple(self, source_images, 
+                      driven_audio,
+                      ref_video = None,
+                      ref_info = None,
+                      ):
+        return_pathes = []
+        for src_img_obj in source_images:
+            return_path = self.test(source_image=src_img_obj.name,
+                                    driven_audio=driven_audio,
+                                    ref_video=ref_video,
+                                    ref_info=ref_info,
+                                    )
+            return_pathes.append(return_path)
+        return return_pathes, return_pathes[-1]
+

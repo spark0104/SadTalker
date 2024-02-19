@@ -38,10 +38,10 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                     with gr.TabItem('Upload images'):
                         with gr.Row():
                             source_images = gr.File(label="Source images", file_count="multiple", file_types=["image"]).style(width=512)
-                with gr.Tabs(elem_id="sadtalker_source_image"):
-                    with gr.TabItem('Upload image'):
-                        with gr.Row():
-                            source_image = gr.Image(label="Source image", source="upload", type="filepath", elem_id="img2img_image").style(width=512)
+                # with gr.Tabs(elem_id="sadtalker_source_image"):
+                #     with gr.TabItem('Upload image'):
+                #         with gr.Row():
+                #             source_image = gr.Image(label="Source image", source="upload", type="filepath", elem_id="img2img_image").style(width=512)
 
                 with gr.Tabs(elem_id="sadtalker_driven_audio"):
                     with gr.TabItem('Upload OR TTS'):
@@ -77,31 +77,31 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                             # enhancer = gr.Checkbox(label="GFPGAN as Face enhancer")
                             submit = gr.Button('Generate', elem_id="sadtalker_generate", variant='primary')
                             
+                with gr.Tabs(elem_id="Gen Vidoes"):
+                        gen_videos = gr.File(label="Generated videos", format="mp4", file_count="multiple")
                 with gr.Tabs(elem_id="sadtalker_genearted"):
                         gen_video = gr.Video(label="Generated video", format="mp4")
-                # with gr.Tabs(elem_id="Gen Vidoes"):
-                #         gen_videos = gr.File(label="Generated videos", format="mp4", file_c)
 
         if warpfn:
             submit.click(
-                        fn=warpfn(sad_talker.test), 
-                        inputs=[source_image,
+                        fn=warpfn(sad_talker.test_multiple), 
+                        inputs=[source_images,
                                 driven_audio,
                                 ref_video,
                                 ref_info,
                                 ], 
-                        outputs=[gen_video]
+                        outputs=[gen_videos, gen_video]
                         )
-        else:
-            submit.click(
-                        fn=sad_talker.test, 
-                        inputs=[source_image,
-                                driven_audio,
-                                ref_video,
-                                ref_info,
-                                ], 
-                        outputs=[gen_video]
-                        )
+        # else:
+        #     submit.click(
+        #                 fn=sad_talker.test, 
+        #                 inputs=[source_image,
+        #                         driven_audio,
+        #                         ref_video,
+        #                         ref_info,
+        #                         ], 
+        #                 outputs=[gen_video]
+        #                 )
 
     return sadtalker_interface
  
