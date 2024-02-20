@@ -47,7 +47,8 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                     with gr.TabItem('Upload OR TTS'):
                         with gr.Column(variant='panel'):
                             driven_audio = gr.Audio(label="Input audio", source="upload", type="filepath")
-
+                            test_audio = gr.Dropdown(label="Test Audio",
+                                                     choices=["audio_1", "audio_2", "audio_3", "audio_4", "audio_5", "audio_6", "audio_7"])
                         if sys.platform != 'win32' and not in_webui: 
                             from src.utils.text2speech import TTSTalker
                             tts_talker = TTSTalker()
@@ -87,6 +88,7 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                         fn=warpfn(sad_talker.test_multiple), 
                         inputs=[source_images,
                                 driven_audio,
+                                test_audio,
                                 ref_video,
                                 ref_info,
                                 ], 

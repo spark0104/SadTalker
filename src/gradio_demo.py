@@ -10,6 +10,7 @@ from src.utils.init_path import init_path
 
 from pydub import AudioSegment
 
+AUDIO_DIR_PATH = os.getenv("AUDIO_PATH", "/home/spark/workspace/RND/sd-webui/data/train-audio/")
 
 def mp3_to_wav(mp3_filename,wav_filename,frame_rate):
     mp3_file = AudioSegment.from_file(file=mp3_filename)
@@ -66,8 +67,7 @@ class SadTalker():
         pic_path = os.path.join(input_dir, os.path.basename(source_image)) 
         shutil.move(source_image, input_dir)
 
-        print(driven_audio)
-        print(os.path.isfile(driven_audio))
+        
         if driven_audio is not None and os.path.isfile(driven_audio):
             audio_path = os.path.join(input_dir, os.path.basename(driven_audio))  
 
@@ -162,13 +162,21 @@ class SadTalker():
     
     def test_multiple(self, source_images, 
                       driven_audio,
+                      test_audio,
                       ref_video = None,
                       ref_info = None,
                       ):
+        
+        print(test_audio)
+        test_audio_path = os.path.join(AUDIO_DIR_PATH, f"{test_audio}.wav")
+        print(test_audio_path)
+        print(os.path.exists(test_audio_path))
+        
+
         return_pathes = []
         for src_img_obj in source_images:
             return_path = self.test(source_image=src_img_obj.name,
-                                    driven_audio=driven_audio,
+                                    driven_audio=test_audio_path,
                                     ref_video=ref_video,
                                     ref_info=ref_info,
                                     )
