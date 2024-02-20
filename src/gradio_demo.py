@@ -160,17 +160,13 @@ class SadTalker():
         
         return return_path
     
-    def test_multiple(self, source_images, 
-                      driven_audio,
+    def test_multiple(self, source_images,
                       test_audio,
                       ref_video = None,
                       ref_info = None,
                       ):
         
-        print(test_audio)
         test_audio_path = os.path.join(AUDIO_DIR_PATH, f"{test_audio}.wav")
-        print(test_audio_path)
-        print(os.path.exists(test_audio_path))
         
 
         return_pathes = []

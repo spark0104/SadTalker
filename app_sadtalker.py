@@ -49,13 +49,13 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                             driven_audio = gr.Audio(label="Input audio", source="upload", type="filepath")
                             test_audio = gr.Dropdown(label="Test Audio",
                                                      choices=["audio_1", "audio_2", "audio_3", "audio_4", "audio_5", "audio_6", "audio_7"])
-                        if sys.platform != 'win32' and not in_webui: 
-                            from src.utils.text2speech import TTSTalker
-                            tts_talker = TTSTalker()
-                            with gr.Column(variant='panel'):
-                                input_text = gr.Textbox(label="Generating audio from text", lines=5, placeholder="please enter some text here, we genreate the audio from text using @Coqui.ai TTS.")
-                                tts = gr.Button('Generate audio',elem_id="sadtalker_audio_generate", variant='primary')
-                                tts.click(fn=tts_talker.test, inputs=[input_text], outputs=[driven_audio])
+                        # if sys.platform != 'win32' and not in_webui: 
+                        #     from src.utils.text2speech import TTSTalker
+                        #     tts_talker = TTSTalker()
+                        #     with gr.Column(variant='panel'):
+                        #         input_text = gr.Textbox(label="Generating audio from text", lines=5, placeholder="please enter some text here, we genreate the audio from text using @Coqui.ai TTS.")
+                        #         tts = gr.Button('Generate audio',elem_id="sadtalker_audio_generate", variant='primary')
+                        #         tts.click(fn=tts_talker.test, inputs=[input_text], outputs=[driven_audio])
                 
                 with gr.Tabs(elem_id="sadtalker_ref_video"):
                     with gr.TabItem("Upload Ref Video"):
@@ -87,7 +87,6 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
             submit.click(
                         fn=warpfn(sad_talker.test_multiple), 
                         inputs=[source_images,
-                                driven_audio,
                                 test_audio,
                                 ref_video,
                                 ref_info,
