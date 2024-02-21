@@ -46,9 +46,10 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                 with gr.Tabs(elem_id="sadtalker_driven_audio"):
                     with gr.TabItem('Upload OR TTS'):
                         with gr.Column(variant='panel'):
-                            driven_audio = gr.Audio(label="Input audio", source="upload", type="filepath")
-                            test_audio = gr.Dropdown(label="Test Audio",
-                                                     choices=["audio_1", "audio_2", "audio_3", "audio_4", "audio_5", "audio_6", "audio_7"])
+                            user_audio = gr.Audio(label="Input User's audio", source="upload", type="filepath")
+                            defautl_audio = gr.Dropdown(label="Default Audio",
+                                                     choices=["audio_1", "audio_2", "audio_3", "audio_4", "audio_5", "audio_6", "audio_7"],
+                                                     value="audio_1")
                         # if sys.platform != 'win32' and not in_webui: 
                         #     from src.utils.text2speech import TTSTalker
                         #     tts_talker = TTSTalker()
@@ -60,14 +61,17 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
                 with gr.Tabs(elem_id="sadtalker_ref_video"):
                     with gr.TabItem("Upload Ref Video"):
                         with gr.Row():
-                            ref_video = gr.Video(label="Ref video", source="upload", type="filepath").style(width=512)
+                            user_ref_video = gr.Video(label="User Ref video", source="upload", type="filepath").style(width=512)
+                            default_ref_video = gr.Dropdown(label="Default Ref Video",
+                                                     choices=["ref_video1", "ref_video2", "ref_video3"],
+                                                     value="ref_video1")
                             
             with gr.Column(variant='panel'): 
                 with gr.Tabs(elem_id="sadtalker_checkbox"):
                     with gr.TabItem('Settings'):
                         gr.Markdown("need help? please visit our [best practice page](https://github.com/OpenTalker/SadTalker/blob/main/docs/best_practice.md) for more detials")
                         with gr.Column(variant='panel'):
-                            ref_info = gr.Radio(["pose", "blink", "pose+blink"])
+                            ref_info = gr.Radio(["pose", "blink", "pose+blink"], value="pose+blink")
                             # width = gr.Slider(minimum=64, elem_id="img2img_width", maximum=2048, step=8, label="Manually Crop Width", value=512) # img2img_width
                             # height = gr.Slider(minimum=64, elem_id="img2img_height", maximum=2048, step=8, label="Manually Crop Height", value=512) # img2img_width
                             # pose_style = gr.Slider(minimum=0, maximum=46, step=1, label="Pose style", value=0) # 
@@ -87,8 +91,10 @@ def sadtalker_demo(checkpoint_path='checkpoints', config_path='src/config', warp
             submit.click(
                         fn=warpfn(sad_talker.test_multiple), 
                         inputs=[source_images,
-                                test_audio,
-                                ref_video,
+                                defautl_audio,
+                                user_audio,
+                                default_ref_video,
+                                user_ref_video,
                                 ref_info,
                                 ], 
                         outputs=[gen_videos, gen_video]

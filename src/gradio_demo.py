@@ -10,8 +10,8 @@ from src.utils.init_path import init_path
 
 from pydub import AudioSegment
 
-AUDIO_DIR_PATH = os.getenv("AUDIO_PATH", "/home/spark/workspace/RND/sd-webui/data/train-audio/")
-
+AUDIO_DIR_PATH = os.getenv("AUDIO_DIR_PATH", "/home/spark/workspace/RND/sd-webui/data/train-audio/")
+REF_VDIEO_DIR_PATH = os.getenv("REF_VDIEO_DIR_PATH", "/home/spark/workspace/RND/sd-webui/data/ref-video/")
 def mp3_to_wav(mp3_filename,wav_filename,frame_rate):
     mp3_file = AudioSegment.from_file(file=mp3_filename)
     mp3_file.set_frame_rate(frame_rate).export(wav_filename,format="wav")
@@ -52,7 +52,6 @@ class SadTalker():
             use_ref_video = False
 
         self.sadtalker_paths = init_path(self.checkpoint_path, self.config_path, size, False, preprocess)
-        print(self.sadtalker_paths)
             
         self.audio_to_coeff = Audio2Coeff(self.sadtalker_paths, self.device)
         self.preprocess_model = CropAndExtract(self.sadtalker_paths, self.device)
@@ -84,14 +83,11 @@ class SadTalker():
             one_sec_segment = AudioSegment.silent(duration=1000*length_of_audio)  #duration in milliseconds
             one_sec_segment.export(audio_path, format="wav")
         else:
-            print(ref_video)
-            print(use_ref_video, ref_info)
             assert use_ref_video == True and ref_info == 'all'
 
         if use_ref_video and ref_info == 'all': # full ref mode
             ref_video_videoname = os.path.basename(ref_video)
             audio_path = os.path.join(save_dir, ref_video_videoname+'.wav')
-            print('new audiopath:',audio_path)
             # if ref_video contains audio, set the audio from ref_video.
             cmd = r"ffmpeg -y -hide_banner -loglevel error -i %s %s"%(ref_video, audio_path)
             os.system(cmd)        
@@ -161,18 +157,26 @@ class SadTalker():
         return return_path
     
     def test_multiple(self, source_images,
-                      test_audio,
-                      ref_video = None,
+                      defautl_audio,
+                      user_audio,
+                      default_ref_video,
+                      user_ref_video,
                       ref_info = None,
                       ):
         
-        test_audio_path = os.path.join(AUDIO_DIR_PATH, f"{test_audio}.wav")
+        if user_audio:
+            driven_audio = user_audio
+        else:
+            driven_audio = os.path.join(AUDIO_DIR_PATH, f"{defautl_audio}.wav")
         
-
+        if user_ref_video:
+            ref_video = user_ref_video
+        else:
+            ref_video = os.path.join(REF_VDIEO_DIR_PATH, f"{ref_video}.mp4")
         return_pathes = []
         for src_img_obj in source_images:
             return_path = self.test(source_image=src_img_obj.name,
-                                    driven_audio=test_audio_path,
+                                    driven_audio=driven_audio,
                                     ref_video=ref_video,
                                     ref_info=ref_info,
                                     )
